@@ -1,4 +1,40 @@
+
+/****************************
+    LOGIN PAGE
+*****************************/
 .login-form {
     margin-top: 120px;
 }
+.navbar {
+    margin-top: 20px;
+    margin-bottom: 60px;
+}
 
+
+/****************************
+    CALENDAR PAGE
+*****************************/
+
+/* EVENTS */
+.fc-event{
+    background-color: #D9230f;
+    border: 1px #D9230f solid;
+    border-radius: 0px;
+    cursor: pointer;
+}
+.note-ul{
+    padding-left: 19px;
+}
+    .note-ul li {
+        padding-top: 5px;
+    }
+
+
+/****************************
+   BOOSTRAP CHANGES
+*****************************/
+
+/* POPOVER */
+.popover {
+    min-width: 200px;
+}
