@@ -82,10 +82,11 @@
             });
 
             request.done(function (response, textStatus, jqXHR){
+                    //console.log(response);
                     loginRequest(response);
             });
 
-            // callback handler that will be called on failure
+            // callback handler that willbe called on failure
             request.fail(function (jqXHR, textStatus, errorThrown){
                 // log the error to the console
                 console.error(
@@ -97,18 +98,20 @@
 
             function loginRequest(response){
 
-                if(response.authentication){ //Login failed
-                    $("input").each(function(){
-                        $(this).parents(".form-group").addClass("has-error");
-                    });
+                if(response.authentication){ //Login true
+                   $("input").each(function(){
+                       $(this).parents(".form-group").addClass("has-success");
+                   });
+                   
+                   $.sessionStorage.set("userid", response.userid);
+                   $.sessionStorage.set("events", response.events);
+                   window.location.replace("calendar.html");
                 }
-                else{ //login ok
+                else{ 
                     $("input").each(function(){
-                        $(this).parents(".form-group").addClass("has-success");
+                      $(this).parents(".form-group").addClass("has-error");
                     });
-                    $.sessionStorage.set("userid", response.userid);
-                    $.sessionStorage.set("events", response.events);
-                    window.location.replace("calendar.html");
+                   
                 }
 
             }
