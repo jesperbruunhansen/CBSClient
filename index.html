@@ -70,7 +70,7 @@
                 username : $("#inputEmail").val(),
                 password : $("#inputPassword").val()
             };
-
+            
             var json = "id=login&jsonData=" + JSON.stringify(loginCredentials);
 
             var request = $.ajax({
@@ -82,8 +82,8 @@
             });
 
             request.done(function (response, textStatus, jqXHR){
-                    //console.log(response);
-                    loginRequest(response);
+                    console.log(response);
+                    //loginRequest(response);
             });
 
             // callback handler that willbe called on failure
@@ -104,8 +104,7 @@
                    });
                    
                    $.sessionStorage.set("userid", response.userid);
-                   $.sessionStorage.set("events", response.events);
-                  // window.location.replace("calendar.html");
+                   window.location.replace("calendar.html");
                 }
                 else{ 
                     $("input").each(function(){

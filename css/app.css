@@ -42,3 +42,9 @@
     min-width: 200px;
     max-width: 323px;
 }
+.modal-body .col-lg-12 {
+    margin-bottom: 15px;
+}
+.modal-body .control-label {
+    margin-top: 9px;
+}
