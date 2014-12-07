@@ -170,6 +170,7 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/datetimepicker.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="js/config.js"></script>
 <script src="js/app.js"></script>
 <script>
 
@@ -178,6 +179,64 @@
         $('#datetimepicker2').datetimepicker();
     });
 
+    function deleteEvent(eventid){
+
+        (function(){
+
+            var deleteEvent = $.ajax({
+
+                type : "POST",
+                url : "http://172.17.181.133:52400/",
+                dataType : "JSON",
+                data : "id=deleteEvent&jsonData={\"eventid\":\""+ eventid + "\"}"
+            });
+
+            deleteEvent.done(function(response){
+                console.log(response);
+                (function(){
+                    var newEventData = [];
+                    var getEvents = $.ajax({
+                        type: "GET",
+                        url: "http://127.0.0.1:52400/getAllEvents/" + $.sessionStorage.get("userid"),
+                        dataType: "JSON"
+                    });
+
+                    getEvents.done(function (response, textStatus, jqXHR) {
+                        if (response != null) {
+                            console.log("events are processing");
+                            processEvents(response);
+                        }
+                    });
+
+                    getEvents.fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR, textStatus, errorThrown);
+                    });
+
+                    var processEvents = function (events) {
+                        console.log(this + " is running ")
+                        events.forEach(function (event) {
+                            var eventObj = {};
+                            eventObj["event_id"] = event.eventid;
+                            eventObj["start"] = new Date(event.start);
+                            eventObj["end"] = new Date(event.end);
+                            eventObj["title"] = event.title;
+                            eventObj["location"] = event.location;
+                            eventObj["notes"] = event.notes;
+                            eventObj["forecast"] = event.weatherData;
+                            newEventData.push(eventObj);
+                        });
+                        $("#calendar").fullCalendar('removeEvents');
+                        $("#calendar").fullCalendar('addEventSource', newEventData);
+                    }
+                })();
+            });
+
+
+
+        }());
+
+
+    }
 
     $("#testLink").click(function(){
 

@@ -3,7 +3,7 @@
     var eventData = [];
     var getEvents = $.ajax({
         type: "GET",
-        url: "http://172.17.181.133:52400/getAllEvents/" + $.sessionStorage.get("userid"),
+        url: config.url + "/getAllEvents/" + $.sessionStorage.get("userid"),
         dataType: "JSON"
     });
 
@@ -27,7 +27,8 @@
             eventObj["title"] = event.title;
             eventObj["location"] = event.location;
             eventObj["notes"] = event.notes;
-            eventObj["forecast"] = event.weatherData;
+            eventObj["forecast"] = event.weatherdata;
+
             eventData.push(eventObj);
         });
         createCalendar();
@@ -104,11 +105,12 @@
 
                 return $.ajax({
                     type: "GET",
-                    url: "http://172.17.181.133:52400/" + apiKey + "/" + userid,
+                    url: config.url +"/"+ apiKey + "/" + userid,
                     dataType: "JSON"
                 });
 
             }
+
 
 
             $("#createEvent").click(function () {
@@ -141,17 +143,57 @@
                 console.log(json);
 
                 var createEvent = $.ajax({
-                    url: "http://172.17.181.133:52400/",
+                    url: config.url,
                     type: "POST",
                     data: json
                 });
                 createEvent.done(function (response) {
                     console.log(response);
 
+                    (function(){
+                        var newEventData = [];
+                        var getEvents = $.ajax({
+                            type: "GET",
+                            url: config.url + "/getAllEvents/" + $.sessionStorage.get("userid"),
+                            dataType: "JSON"
+                        });
+
+                        getEvents.done(function (response, textStatus, jqXHR) {
+                            if (response != null) {
+                                console.log("events are processing");
+                                processEvents(response);
+                            }
+                        });
+
+                        getEvents.fail(function (jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR, textStatus, errorThrown);
+                        });
+
+                        var processEvents = function (events) {
+                            console.log(this + " is running ")
+                            events.forEach(function (event) {
+                                var eventObj = {};
+                                eventObj["event_id"] = event.eventid;
+                                eventObj["start"] = new Date(event.start);
+                                eventObj["end"] = new Date(event.end);
+                                eventObj["title"] = event.title;
+                                eventObj["location"] = event.location;
+                                eventObj["notes"] = event.notes;
+                                eventObj["forecast"] = event.weatherdata;
+                                newEventData.push(eventObj);
+                            });
+                            $("#calendar").fullCalendar('removeEvents');
+                            $("#calendar").fullCalendar('addEventSource', newEventData);
+                            $("#createNewEvent").modal("hide");
+                        }
+                    }());
+
                 });
 
 
             });
+
+
 
             /********************************************
              Creation of FullCalender
@@ -208,12 +250,18 @@
                                 "</td>" +
                                 "</tr>" +
                                 EventUtility.forecast(calEvent.forecast) +
-                                "</tbody" +
+                                "<tr>" +
+                                    "<td class=\"text-right\" colspan=\"2\">" +
+                                        "<a onclick=\"deleteEvent('" + calEvent.event_id + "')\" href=\"#\"><span class=\"glyphicon glyphicon-remove\" style=\"style:color:red;margin-right:5px\"></span>Slet event</a>" +
+                                    "</td>" +
+                                "</tr>"
+                                "</tbody>" +
                                 "</table>";
                         },
                         container: "body"
                     });
                     $(this).popover('toggle');
+
 
                     $.fn.editable.defaults.mode = 'inline';
                     $('#addNewNote' + calEvent._id).editable({
@@ -221,7 +269,7 @@
                     }).on("save", function (e, params) {
 
                         var request = $.ajax({
-                            url: 'http://127.0.0.1:52400/',
+                            url: config.url,
                             dataType: "json",
                             type: "POST",
                             data: "id=addNote&jsonData=" +
@@ -247,6 +295,8 @@
 
         });
 
+
     }
+
 
 }());

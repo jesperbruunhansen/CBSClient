@@ -59,6 +59,7 @@
 <script src="js/jquery.storageapi.min.js"></script>
 <script src="js/json2.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/config.js"></script>
 <script>
     $(document).ready(function () {
 
@@ -74,7 +75,7 @@
             var json = "id=login&jsonData=" + JSON.stringify(loginCredentials);
 
             var request = $.ajax({
-                url: "http://127.0.0.1:52400/",
+                url: config.url,
                 type: "POST",
                 cache: false,
                 contentType: "application/json; charset=utf-8",
@@ -83,7 +84,7 @@
 
             request.done(function (response, textStatus, jqXHR){
                     console.log(response);
-                    //loginRequest(response);
+                    loginRequest(response);
             });
 
             // callback handler that willbe called on failure
