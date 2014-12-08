@@ -30,7 +30,9 @@
             eventObj["forecast"] = event.weatherdata;
 
             eventData.push(eventObj);
+            
         });
+        console.log(eventData);
         createCalendar();
     }
 
